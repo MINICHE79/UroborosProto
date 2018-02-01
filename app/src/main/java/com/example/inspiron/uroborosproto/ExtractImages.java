@@ -17,40 +17,14 @@ import java.util.regex.Pattern;
 
 public class ExtractImages {
     ArrayList<String> Images;
-    String url = "https://boards.4chan.org/a/thread/167850084";
+    String url = "https://boards.4chan.org/an/thread/2588833";
     Document doc;
     String tmp = "";
     Elements links;
     public ExtractImages() throws IOException {
         Images = new ArrayList<>();
-
         new DataGrabber().execute();
 
-        //Document doc = Jsoup.connect(url).get();
-        //Elements links = doc.select("a[href]");
-
-
-
-
-        for (Element link : links) {
-            Pattern pat = Pattern.compile(tmp);
-            Matcher mat = pat.matcher(guardar(link.attr("abs:href")));
-            Pattern patE = Pattern.compile(".*4cdn.*");
-            Matcher matE = patE.matcher(guardar(link.attr("abs:href")));
-            if (!mat.matches() && matE.matches()){
-                Pattern pat1 = Pattern.compile(".*.jpg$");
-                Matcher mat1 = pat1.matcher(guardar(link.attr("abs:href")));
-                if (mat1.matches()){
-                    Images.add(guardar(link.attr("abs:href")));
-                    tmp = guardar(link.attr("abs:href"));
-                }
-            }
-        }
-        for (int i = 0; i < Images.size(); i++) {
-            System.out.println(Images.get(i));
-
-        }
-        //DownLoader DL = new DownLoader();
     }
 
     private static String guardar(String msg, Object... args) {
@@ -66,6 +40,27 @@ public class ExtractImages {
             try {
                 doc = Jsoup.connect(url).get();
                 System.out.println(doc.title());
+
+                Elements links = doc.select("a[href]");
+
+                for (Element link : links) {
+                    Pattern pat = Pattern.compile(tmp);
+                    Matcher mat = pat.matcher(guardar(link.attr("abs:href")));
+                    Pattern patE = Pattern.compile(".*4cdn.*");
+                    Matcher matE = patE.matcher(guardar(link.attr("abs:href")));
+                    if (!mat.matches() && matE.matches()){
+                        //Pattern pat1 = Pattern.compile(".*.jpg$");
+                        //Matcher mat1 = pat1.matcher(guardar(link.attr("abs:href")));
+                        //if (mat1.matches()){
+                        Images.add(guardar(link.attr("abs:href")));
+                        tmp = guardar(link.attr("abs:href"));
+                        //}
+                    }
+                }
+                for (int i = 0; i < Images.size(); i++) {
+                    System.out.println(Images.get(i));
+
+                }
             } catch (IOException e) {
 
                 e.printStackTrace();
