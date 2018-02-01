@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">UroborosProto</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="threads">
+        <item>/A/</item>
+        <item>/B/</item>
+        <item>/C/</item>
+        <item>/D/</item>
+        <item>/E/</item>
+        <item>Agregar</item>
+    </string-array>
+</resources>
