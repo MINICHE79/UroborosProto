@@ -24,11 +24,9 @@ public class ExtractImages {
     public ExtractImages() throws IOException {
         Images = new ArrayList<>();
         new DataGrabber().execute();
-
     }
 
     private static String guardar(String msg, Object... args) {
-
         return (String.format(msg, args));
     }
 
@@ -36,13 +34,10 @@ public class ExtractImages {
 
         @Override
         protected Void doInBackground(Void... params) {
-
             try {
                 doc = Jsoup.connect(url).get();
                 System.out.println(doc.title());
-
                 Elements links = doc.select("a[href]");
-
                 for (Element link : links) {
                     Pattern pat = Pattern.compile(tmp);
                     Matcher mat = pat.matcher(guardar(link.attr("abs:href")));
@@ -57,12 +52,13 @@ public class ExtractImages {
                         //}
                     }
                 }
+                DownLoader DL = new DownLoader(Images);
+
                 for (int i = 0; i < Images.size(); i++) {
                     System.out.println(Images.get(i));
 
                 }
             } catch (IOException e) {
-
                 e.printStackTrace();
             }
             return null;
