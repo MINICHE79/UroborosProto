@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Este archivo contiene los elemetos que va a llevar la tabla de "content_app.xml" -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -6,12 +7,13 @@
     android:layout_height="match_parent"
     android:padding="3dp"
     >
-
-    <WebView
+    <!--Carga imagen desde internet -->
+    <ImageView
+        android:id="@+id/image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:gravity="center" />
-
+    <!--Contine la descripcion de la imagen -->
     <TextView
         android:id="@+id/thread"
         android:layout_width="match_parent"
