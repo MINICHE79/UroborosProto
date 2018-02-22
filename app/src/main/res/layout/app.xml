@@ -8,4 +8,6 @@
     android:background="#324851"
     tools:context="com.example.inspiron.uroborosproto.App">
 
+    <include layout="@layout/content_app" />
+
 </android.support.design.widget.CoordinatorLayout>
