@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "371285017714",
+    "firebase_url": "https://uroborosproto.firebaseio.com",
+    "project_id": "uroborosproto",
+    "storage_bucket": "uroborosproto.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371285017714:android:60e2b0961bfde1b9",
+        "android_client_info": {
+          "package_name": "com.example.inspiron.uroborosproto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371285017714-1ca9g8273fktmgcpnl4et05dm5vr89pd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.inspiron.uroborosproto",
+            "certificate_hash": "c760133862cfc67874df6a057c45fb3304366288"
+          }
+        },
+        {
+          "client_id": "371285017714-77gnmjqm7ekme3j812vivedu86f06llv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlyH6MNU0uxBxrDd69H6s_cWBnZ7AWFi8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371285017714-77gnmjqm7ekme3j812vivedu86f06llv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

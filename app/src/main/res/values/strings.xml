@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UroborosProto</string>
+    <string name="app_name">Uroboros</string>
     <string name="action_settings">Settings</string>
 
     <string-array name="threads">
@@ -10,4 +10,9 @@
         <item>/E/</item>
         <item>Agregar</item>
     </string-array>
+    <string name="loading">Loading…</string>
+    <string name="log_error_occurred">"Error occurred: "</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="web_client_id">Include your web client id here</string>
 </resources>
