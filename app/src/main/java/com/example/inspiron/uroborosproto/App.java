@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -51,11 +52,20 @@ public class App extends AppCompatActivity {
     String URL = "http://4chan.org/";//el URL que se va a usar
     String title = "";
     String Board = null;
-    ArrayList<String> Threads = new ArrayList<>();
+    ArrayList<String> Threads;
     ArrayList<String> Images;
     ArrayList<item> lista;
     private Button prueba = null;
     private Spinner spinner = null;
+    int values;
+    Bitmap bitmap;
+    private ProgressDialog dialog;
+    private int ImgNum = 0;
+    GridImages g = null;
+    DownloadIm di = null;
+    ArrayList<String> TImages;
+    ExtractImages EI = null;
+    ExtractThreads ET = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {//Metodo de inicio
@@ -78,46 +88,152 @@ public class App extends AppCompatActivity {
         }
 
 
-        ExtractImages EI = null;
-        try {
-            EI = new ExtractImages(App.this);
-            //Threads = EI.boards("an");
-            Images = EI.threads("https://boards.4chan.org/an/thread/2607983");
-            title = EI.returnTitle();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         prueba = (Button) findViewById(R.id.prueba);
         prueba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(App.this, "Descargando" + title, Toast.LENGTH_SHORT).show();
-                Download dl = new Download(App.this, title);
-                for (int i = 0; i<Images.size();i++){
-                    dl.downloadFile(Images.get(i));
+
+                try {
+                    EI = new ExtractImages(App.this);
+                    //Threads = EI.boards("an");
+                    Images = EI.threads("https://boards.4chan.org/an/thread/2607983");
+                    title = EI.returnTitle();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                Toast.makeText(App.this, "Descargando" + title, Toast.LENGTH_SHORT).show();
+                new DownloadIm().execute();
             }
         });
 
+        try {
+            ET = new ExtractThreads(App.this);
+            ET.boards("an");
+
+            TImages = ET.returnImages();
+            Threads = ET.returnThreads();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        g = new GridImages();
+        di = new DownloadIm();
         spinner = (Spinner)findViewById(R.id.Spinner);
 
 
         gridView = (GridView) findViewById(R.id.gridView);
+        lista = new ArrayList<>();
+        fillImages();
 
-        adapter = new itemAdapter(this, R.layout.griditems, fillImages());
+        adapter = new itemAdapter(this, R.layout.griditems, lista);
         gridView.setAdapter(adapter);
+
+
+        gridView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                if(ImgNum <150)
+                    new GridImages().execute();
+                // or loadNextDataFromApi(totalItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
+
+        /*gridView.setOnScrollListener(new AbsListView.OnScrollListener(){
+
+            @Override
+            public void onScroll(AbsListView view,
+                                 int firstVisibleItem, int visibleItemCount,
+                                 int totalItemCount) {
+                //Algorithm to check if the last item is visible or not
+                final int lastItem = firstVisibleItem + visibleItemCount;
+                if(lastItem == totalItemCount && firstVisibleItem != 0){
+                    // here you have reached end of list, load more data
+                    //fetchMoreItems();
+                    new GridImages().execute();
+
+                }
+            }
+            @Override
+            public void onScrollStateChanged(AbsListView view,int scrollState) {
+                //blank, not required in your case
+
+            }
+        });*/
+
     }
 
-    private ArrayList<item> fillImages() {
+    private void fillImages() {
         try {
-            new GridImages().execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            g.execute();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return lista;
+    }
+
+
+
+
+    class GridImages extends AsyncTask<String,Void,Bitmap> {
+
+        /*@Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(App.this);
+            // Set progress dialog title
+            dialog.setTitle("Loading");
+            // Set progress dialog message
+            dialog.setMessage("Loading");
+            dialog.setIndeterminate(false);
+            // Show progress dialog
+            dialog.show();
+        }*/
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            try {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+
+                for (int i = ImgNum; i <= ImgNum+14; i++) {
+                    if (i<150) {
+                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(TImages.get(i)).getContent());
+                        lista.add((new item(bitmap, "Thread" + i)));
+                    }
+                }
+
+                ImgNum = ImgNum + 15;
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            adapter.notifyDataSetChanged();
+            //dialog.dismiss();
+        }
+    }
+
+    class DownloadIm extends  AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            Download dl = new Download(App.this, title);
+            for (int i = 0; i<Images.size();i++){
+                dl.downloadFile(Images.get(i));
+            }
+            return null;
+        }
     }
 
     @Override
@@ -140,29 +256,6 @@ public class App extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    class GridImages extends AsyncTask<String,Void,Bitmap> {
-
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            try {
-                int values = Images.size();
-                lista = new ArrayList<>();
-                for (int i = 0; i <= values; i++) {
-
-                    Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(Images.get(i)).getContent());
-                    lista.add((new item(bitmap, "Image" + i)));
-
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return null;
-
-        }
     }
 
 }

@@ -28,10 +28,6 @@
             android:name=".App"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity
-            android:name=".BaseActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
     </application>
 
 </manifest>

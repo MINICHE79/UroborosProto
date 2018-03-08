@@ -3,11 +3,11 @@
     <string name="action_settings">Settings</string>
 
     <string-array name="threads">
-        <item>/A/</item>
-        <item>/B/</item>
-        <item>/C/</item>
-        <item>/D/</item>
-        <item>/E/</item>
+        <item>/a/</item>
+        <item>/b/</item>
+        <item>/c/</item>
+        <item>/d/</item>
+        <item>/e/</item>
         <item>Agregar</item>
     </string-array>
     <string name="loading">Loading…</string>
