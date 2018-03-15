@@ -4,11 +4,57 @@
 
     <string-array name="threads">
         <item>/a/</item>
-        <item>/b/</item>
         <item>/c/</item>
         <item>/d/</item>
-        <item>/e/</item>
-        <item>Agregar</item>
+        <item>/g/</item>
+        <item>/k/</item>
+        <item>/m/</item>
+        <item>/o/</item>
+        <item>/p/</item>
+        <item>/v/</item>
+        <item>/vg/</item>
+        <item>/vr/</item>
+        <item>/w/</item>
+        <item>/wg/</item>
+        <item>/i/</item>
+        <item>/ic/</item>
+        <item>/vip/</item>
+        <item>/qa/</item>
+        <item>/cm/</item>
+        <item>/lgbt/</item>
+        <item>/3/</item>
+        <item>/adv/</item>
+        <item>/an/</item>
+        <item>/asp/</item>
+        <item>/biz/</item>
+        <item>/cgl/</item>
+        <item>/ck/</item>
+        <item>/co/</item>
+        <item>/diy/</item>
+        <item>/fa/</item>
+        <item>/fit/</item>
+        <item>/gd/</item>
+        <item>/his/</item>
+        <item>/int/</item>
+        <item>/jp/</item>
+        <item>/lit/</item>
+        <item>/mlp/</item>
+        <item>/mu/</item>
+        <item>/n/</item>
+        <item>/news/</item>
+        <item>/out/</item>
+        <item>/po/</item>
+        <item>/qst/</item>
+        <item>/sci/</item>
+        <item>/sp/</item>
+        <item>/tg/</item>
+        <item>/toy/</item>
+        <item>/trv/</item>
+        <item>/tv/</item>
+        <item>/vp/</item>
+        <item>/wsg/</item>
+        <item>/wsr/</item>
+        <item>/x/</item>
     </string-array>
     <string name="loading">Loading…</string>
     <string name="log_error_occurred">"Error occurred: "</string>

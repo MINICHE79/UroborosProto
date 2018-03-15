@@ -28,18 +28,11 @@ public class ExtractThreads {
     private String url = null; //Prueba
     private Document doc; //elemento del Jsoup para guardar los links
     private String board; //los tipos de links que se extraerán
-    private String ImgCode;
+    private String Title;
     private Context context = null;
     Pattern pat;
     Pattern patIm;
     Matcher mat;
-    /*Pattern patPNG;
-    Pattern patGIF;
-    Pattern patWEBM;
-
-    Matcher matPNG;
-    Matcher matGIF;
-    Matcher matWEBM;*/
 
     public ExtractThreads(Context context) throws IOException {
         this.context = context;
@@ -51,12 +44,12 @@ public class ExtractThreads {
         Html = new ArrayList<>();
         Threads = new ArrayList<>();
         Images = new ArrayList<>();
-        url = "https://boards.4chan.org/"+board+"/catalog";
+        url = "https://boards.4chan.org"+board+"catalog";
         new DataGrabber().execute().get();
-
 
         pat = Pattern.compile("([^,{}]*)");
         String[] codes = Html.get(2).split("\"");
+
         Html.clear();
         for (int i = 0; i<codes.length;i++){
             mat = pat.matcher(codes[i]);
@@ -64,32 +57,21 @@ public class ExtractThreads {
                 Html.add(codes[i]);
             }
         }
-
+        Threads.add(Title);
         for (int i = 0; i < Html.size(); i++){
-            pat = Pattern.compile("[0-9]{7}");
+            pat = Pattern.compile("[0-9]{6,12}");
             mat = pat.matcher(Html.get(i));
             if (mat.matches())
-                Threads.add("https://boards.4chan.org/" + board + "/thread/" + Html.get(i));
-            //patIm = Pattern.compile(".*.jpg$");
-            //patPNG = Pattern.compile(".*.png$");
-            //patGIF = Pattern.compile(".*.gif$");
-            //patWEBM = Pattern.compile(".*.webm$");
-            //mat = patIm.matcher(Html.get(i));
-            //matPNG = patPNG.matcher(Html.get(i));
-            //matGIF = patGIF.matcher(Html.get(i));
-            //matWEBM = patWEBM.matcher(Html.get(i));
-            //if (mat.matches() || matPNG.matches() || matGIF.matches() || matWEBM.matches()){
-            //    codes = Html.get(i).split("\\.");
-            //}
-            patIm = Pattern.compile("[0-9]{13}");
+                Threads.add("https://boards.4chan.org" + board + "thread/" + Html.get(i));
+            patIm = Pattern.compile("[0-9]{13,16}");
             mat = patIm.matcher(Html.get(i));
             if (mat.matches()) {
-                Images.add("https://i.4cdn.org/" + board + "/" + Html.get(i) + "s.jpg");
+                Images.add("https://i.4cdn.org" + board + Html.get(i) + "s.jpg");
             }
         }
-        for (int i = 0; i < Images.size(); i++){
-            System.out.println(Images.get(i));
-        }
+        //for (int i = 0; i < Threads.size(); i++){
+        //    System.out.println(Threads.get(i));
+        //}
     }
 
 
@@ -108,8 +90,7 @@ public class ExtractThreads {
             try {
                 //Se conecta a la pagina de internet y extrae los links
                 doc = Jsoup.connect(url).get();
-                System.out.println(doc.title());
-
+                Title = doc.title().split("-")[1];
                 Elements links = doc.select("script");
                 for (Element link : links) {
                     Html.add(link.data());
@@ -120,22 +101,6 @@ public class ExtractThreads {
             }
 
             return null;
-        }
-        ProgressDialog progressBar = new ProgressDialog(context);
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setCancelable(true);
-            progressBar.setMessage("Cargando");
-            progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressBar.show();
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressBar.dismiss();
-
         }
     }
 }

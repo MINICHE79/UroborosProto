@@ -28,21 +28,11 @@
             <!--Menu de opciones-->
             <Spinner
                 android:id="@+id/Spinner"
-                android:layout_width="wrap_content"
+                android:layout_width="90dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:entries="@array/threads" />
-
-            <Button
-                android:id="@+id/prueba"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="29dp"
-                android:layout_weight="1"
-                android:text="Descargar" />
 
         </android.support.v7.widget.Toolbar>
 

@@ -6,6 +6,7 @@ package com.example.inspiron.uroborosproto;
 
 import android.*;
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -29,13 +30,19 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -46,26 +53,27 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Portillo,Alderete on 25/01/2018.
  */
-public class App extends AppCompatActivity {
+public class App extends AppCompatActivity{
     private GridView gridView = null;
     private itemAdapter adapter = null;
     String URL = "http://4chan.org/";//el URL que se va a usar
     String title = "";
-    String Board = null;
+    String BoardTitle = null;
+    String Board = "/a/";
     ArrayList<String> Threads;
     ArrayList<String> Images;
     ArrayList<item> lista;
     private Button prueba = null;
     private Spinner spinner = null;
-    int values;
     Bitmap bitmap;
-    private ProgressDialog dialog;
     private int ImgNum = 0;
     GridImages g = null;
     DownloadIm di = null;
     ArrayList<String> TImages;
     ExtractImages EI = null;
     ExtractThreads ET = null;
+    private Document doc;
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {//Metodo de inicio
@@ -80,21 +88,13 @@ public class App extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, permissionCall);
             }
         }
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Board name");
-        }
 
 
-
-
-        prueba = (Button) findViewById(R.id.prueba);
-        prueba.setOnClickListener(new View.OnClickListener() {
+        /*prueba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 try {
                     EI = new ExtractImages(App.this);
                     //Threads = EI.boards("an");
@@ -106,24 +106,25 @@ public class App extends AppCompatActivity {
                 Toast.makeText(App.this, "Descargando" + title, Toast.LENGTH_SHORT).show();
                 new DownloadIm().execute();
             }
-        });
+        });*/
 
         try {
             ET = new ExtractThreads(App.this);
-            ET.boards("an");
-
+            ET.boards("/a/");
             TImages = ET.returnImages();
             Threads = ET.returnThreads();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(Threads.get(0));
+        }
 
         g = new GridImages();
         di = new DownloadIm();
+
         spinner = (Spinner)findViewById(R.id.Spinner);
-
-
         gridView = (GridView) findViewById(R.id.gridView);
         lista = new ArrayList<>();
         fillImages();
@@ -144,28 +145,49 @@ public class App extends AppCompatActivity {
             }
         });
 
-        /*gridView.setOnScrollListener(new AbsListView.OnScrollListener(){
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView parent, View v,
+                                    final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(App.this);
+                View mview = getLayoutInflater().inflate(R.layout.btndownload,null);
+                Button DL = (Button) mview.findViewById(R.id.download);
+                TextView TV = (TextView) mview.findViewById(R.id.TV);
+                TV.setText("Download: " + lista.get(position).getName());
 
+                DL.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            EI = new ExtractImages(App.this);
+                            Images = EI.threads(Threads.get(position + 1));
+                            title = EI.returnTitle();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(App.this, "Descargando" + title, Toast.LENGTH_SHORT).show();
+                        new DownloadIm().execute();
+                    }
+                });
+                builder.setView(mview);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onScroll(AbsListView view,
-                                 int firstVisibleItem, int visibleItemCount,
-                                 int totalItemCount) {
-                //Algorithm to check if the last item is visible or not
-                final int lastItem = firstVisibleItem + visibleItemCount;
-                if(lastItem == totalItemCount && firstVisibleItem != 0){
-                    // here you have reached end of list, load more data
-                    //fetchMoreItems();
-                    new GridImages().execute();
-
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(flag) {
+                    reLoad();
                 }
+                flag = true;
             }
+
             @Override
-            public void onScrollStateChanged(AbsListView view,int scrollState) {
-                //blank, not required in your case
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });*/
-
+        });
     }
 
     private void fillImages() {
@@ -176,7 +198,25 @@ public class App extends AppCompatActivity {
         }
     }
 
-
+    public void reLoad(){
+        lista.clear();
+        adapter.notifyDataSetChanged();
+        ImgNum = 0;
+        try {
+            ET = new ExtractThreads(App.this);
+            ET.boards(spinner.getSelectedItem().toString());
+            TImages = ET.returnImages();
+            Threads = ET.returnThreads();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(Threads.get(0));
+        }
+        g = new GridImages();
+        di = new DownloadIm();
+        fillImages();
+    }
 
 
     class GridImages extends AsyncTask<String,Void,Bitmap> {
@@ -202,11 +242,17 @@ public class App extends AppCompatActivity {
 
                 for (int i = ImgNum; i <= ImgNum+14; i++) {
                     if (i<150) {
-                        bitmap = BitmapFactory.decodeStream((InputStream) new URL(TImages.get(i)).getContent());
-                        lista.add((new item(bitmap, "Thread" + i)));
+                        try {
+                            bitmap = BitmapFactory.decodeStream((InputStream) new URL(TImages.get(i)).getContent());
+
+                            doc = Jsoup.connect(Threads.get(i+1)).get();
+                            String text = doc.title().split("-")[1];
+                            lista.add((new item(bitmap, text)));
+                        }catch (FileNotFoundException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
-
                 ImgNum = ImgNum + 15;
 
             }catch (Exception e){

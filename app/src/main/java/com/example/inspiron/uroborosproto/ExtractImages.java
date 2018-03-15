@@ -46,17 +46,6 @@ public class ExtractImages {
         return Links;
     }
 
-    public ArrayList<String> boards(String board) throws ExecutionException, InterruptedException {//el patron que se usará para los links de los boards
-        Links = new ArrayList<>();
-        //patron = "(.*thread/[0-9]{9})";
-        patron = ".*4cdn.*";
-        //for (cont=1; cont<=10;cont++) {
-            url = "https://boards.4chan.org/"+board+"/";
-            new DataGrabber().execute().get();
-        //}
-        return Links;
-    }
-
     //Transforma a string los datos
 
     private static String guardar(String msg, Object... args) {

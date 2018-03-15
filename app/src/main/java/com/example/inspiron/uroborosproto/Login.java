@@ -66,7 +66,19 @@ public class Login extends AppCompatActivity {
                 UserSignInMethod();
             }
         });
+
+        try {
+            ExtractThreads et = new ExtractThreads(this);
+            et.boards("/v/");
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
+
     public void UserSignInMethod(){
         Intent AuthIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(AuthIntent, RequestSignInCode);
